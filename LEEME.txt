@@ -1,0 +1,30 @@
+J.A.R.V.I.S. — prototipo móvil
+
+CONTENIDO
+- index.html: interfaz móvil, comandos básicos y voz del navegador.
+- manifest.webmanifest: configuración instalable tipo PWA.
+- sw.js: caché básica para funcionamiento sin conexión de la interfaz.
+
+IMPORTANTE
+Este paquete es un PROTOTIPO PWA, no un APK nativo ni una IA conectada.
+Para que el reconocimiento de voz funcione, publica los archivos en un sitio HTTPS
+(por ejemplo, GitHub Pages) y abre la dirección en Chrome Android.
+La voz masculina depende de las voces instaladas en Android; si no existe una voz
+masculina española, se usará la primera voz española disponible.
+No controla libremente el teléfono. Los accesos externos abren sitios web y Android
+mantiene el control de permisos y privacidad.
+
+INSTALACIÓN EN ANDROID
+1. Publica los tres archivos en un sitio HTTPS.
+2. Abre la dirección en Chrome.
+3. Menú ⋮ > Añadir a pantalla principal o Instalar aplicación.
+4. Permite el micrófono cuando Chrome lo solicite.
+
+COMANDOS INCLUIDOS
+- Hola
+- ¿Qué hora es?
+- Abre YouTube
+- Abre Google / busca en Internet
+- Abre los mapas
+- Abre la cámara
+- ¿Qué puedes hacer?

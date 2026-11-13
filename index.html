@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#020914">
+<meta name="description" content="J.A.R.V.I.S. - Asistente personal en español">
+<link rel="manifest" href="manifest.webmanifest">
+<title>J.A.R.V.I.S.</title>
+<style>
+:root{color-scheme:dark;--cyan:#32dcff;--blue:#087dce;--bg:#020914;--panel:#071a2c;--muted:#9cc7df}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at 50% 25%,#07365a 0,#031629 38%,#020914 75%);color:#e8f8ff;font-family:system-ui,-apple-system,Segoe UI,sans-serif;min-height:100vh}
+.app{max-width:520px;margin:auto;padding:env(safe-area-inset-top) 16px calc(22px + env(safe-area-inset-bottom))}
+header{display:flex;justify-content:space-between;align-items:center;padding:18px 4px 12px;border-bottom:1px solid #0a85bd}
+.brand{font-weight:900;letter-spacing:3px;color:var(--cyan);font-size:25px;text-shadow:0 0 16px #00bfff}.sub{font-size:10px;letter-spacing:2px;color:#9edfff}.status{font-size:12px;color:#9edfff;text-align:right}
+.core-wrap{display:flex;justify-content:center;padding:28px 0 18px}
+.core{width:210px;height:210px;border-radius:50%;display:grid;place-items:center;position:relative;background:radial-gradient(circle,#0a4770 0,#04172a 58%,#020914 70%);border:2px solid #1ccfff;box-shadow:0 0 18px #00bfff, inset 0 0 28px #0076b9;animation:pulse 3s infinite}
+.core:before,.core:after{content:"";position:absolute;border-radius:50%;inset:-13px;border:1px dashed #20cfff;animation:spin 18s linear infinite}
+.core:after{inset:-24px;border:2px solid transparent;border-top-color:#28dfff;border-bottom-color:#087acb;animation:spin 8s linear infinite reverse}
+.core-icon{font-size:70px;color:#66eaff;text-shadow:0 0 20px #00bfff}
+@keyframes spin{to{transform:rotate(360deg)}}@keyframes pulse{50%{box-shadow:0 0 32px #00cfff,inset 0 0 38px #008bd1}}
+.statusline{text-align:center;color:#63dfff;font-size:12px;letter-spacing:2px;margin-top:3px}
+.panel{background:linear-gradient(145deg,#08223aee,#041323ee);border:1px solid #087db6;border-radius:16px;padding:15px;margin:13px 0;box-shadow:0 0 15px #003b5c55}
+.greeting{text-align:center;font-size:19px;color:#51dfff;font-weight:650}.reply{text-align:center;color:#d9f4ff;min-height:24px;margin-top:7px;font-size:14px}
+.mic-area{text-align:center;padding:12px 0 4px}.mic{width:84px;height:84px;border-radius:50%;border:2px solid #4de6ff;background:radial-gradient(circle,#0d6594,#031a31);color:#d9fbff;font-size:34px;box-shadow:0 0 24px #00bfff;cursor:pointer}.mic.listening{background:#8a1837;box-shadow:0 0 28px #ff315d;border-color:#ff7694}
+.hint{font-size:11px;color:#9cc7df;margin-top:10px}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}.tile{background:#071d32;border:1px solid #0a7eb4;border-radius:12px;padding:13px 5px;color:#c9f1ff;text-align:center;text-decoration:none;font-size:12px;min-height:76px;cursor:pointer}.tile span{display:block;font-size:24px;margin-bottom:5px;color:#42dfff}
+.row{display:flex;justify-content:space-between;gap:10px;color:#9cc7df;font-size:12px}.smallbtn{background:#092945;border:1px solid #0b80b5;color:#c8f3ff;border-radius:9px;padding:9px 12px;font-size:12px}
+input{width:100%;background:#031322;border:1px solid #087db6;border-radius:10px;color:white;padding:12px;font-size:14px}
+footer{text-align:center;color:#568aa6;font-size:10px;padding:16px}
+</style>
+</head>
+<body>
+<div class="app">
+<header><div><div class="brand">J.A.R.V.I.S.</div><div class="sub">ASISTENTE PERSONAL</div></div><div class="status"><div id="clock">--:--</div><div id="battery">Batería: --</div></div></header>
+<div class="core-wrap"><div class="core"><div class="core-icon">◈</div></div></div>
+<div class="statusline" id="state">SISTEMA LISTO · ESPERANDO</div>
+<section class="panel"><div class="greeting">Hola. Soy J.A.R.V.I.S.</div><div class="reply" id="reply">Pulsa el micrófono y dime qué necesitas.</div></section>
+<div class="mic-area"><button class="mic" id="mic" aria-label="Hablar">🎙</button><div class="hint">PULSA PARA HABLAR · ESPAÑOL</div></div>
+<section class="panel"><div class="row"><strong>ACCESOS RÁPIDOS</strong><span>Funciones autorizadas</span></div><div class="grid" style="margin-top:12px">
+<button class="tile" data-open="https://www.google.com"><span>⌕</span>Google</button>
+<button class="tile" data-open="https://www.youtube.com"><span>▶</span>YouTube</button>
+<button class="tile" data-open="https://maps.google.com"><span>⌖</span>Mapas</button>
+<button class="tile" id="camera"><span>▣</span>Cámara</button>
+<button class="tile" data-open="https://wa.me/"><span>✉</span>WhatsApp</button>
+<button class="tile" data-open="https://www.google.com/search?q=noticias"><span>◉</span>Noticias</button>
+</div></section>
+<section class="panel"><div class="row"><strong>COMANDO MANUAL</strong><button class="smallbtn" id="send">Enviar</button></div><input id="typed" placeholder="Escribe: abre YouTube, qué hora es..." style="margin-top:10px"></section>
+<section class="panel"><div class="row"><strong>VOZ DEL ASISTENTE</strong><button class="smallbtn" id="testvoice">Probar voz</button></div><div class="hint">Se elegirá una voz española masculina disponible en tu Android, si el sistema ofrece una.</div></section>
+<footer>J.A.R.V.I.S. · Prototipo móvil · Los permisos dependen de Android</footer>
+</div>
+<script>
+const $=id=>document.getElementById(id);
+function say(text){$('reply').textContent=text;if(!('speechSynthesis'in window))return; speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(text);u.lang='es-MX';const voices=speechSynthesis.getVoices();const spanish=voices.filter(v=>/^es/i.test(v.lang));const male=spanish.find(v=>/male|mascul|jorge|raul|diego|pablo/i.test(v.name));if(male)u.voice=male;else if(spanish[0])u.voice=spanish[0];u.rate=.94;u.pitch=.82;speechSynthesis.speak(u)}
+function runCommand(raw){const s=raw.toLowerCase().trim();$('state').textContent='COMANDO RECIBIDO';
+if(s.includes('youtube')){say('Abriendo YouTube.');location.href='https://www.youtube.com';}
+else if(s.includes('google')||s.includes('internet')||s.includes('buscar')){say('Abriendo Google.');location.href='https://www.google.com';}
+else if(s.includes('mapa')||s.includes('direcciones')){say('Abriendo Google Maps.');location.href='https://maps.google.com';}
+else if(s.includes('cámara')||s.includes('camara')){say('Voy a abrir la cámara.');openCamera();}
+else if(s.includes('hora')){say('Son las '+new Date().toLocaleTimeString('es-MX',{hour:'2-digit',minute:'2-digit'}));}
+else if(s.includes('hola')){say('Hola. Estoy listo para ayudarte.');}
+else if(s.includes('cómo estás')||s.includes('como estas')){say('Todos los sistemas de esta versión están listos. ¿Qué necesitas?');}
+else if(s.includes('qué puedes hacer')||s.includes('que puedes hacer')){say('Puedo abrir Google, YouTube y mapas, mostrar la hora y responder a algunos comandos básicos.');}
+else if(s.includes('noticia')){say('Buscando noticias en Google.');location.href='https://www.google.com/search?q=noticias+hoy';}
+else{say('Todavía no tengo una acción configurada para ese comando. Podemos añadirla en la siguiente versión.');}
+}
+function openCamera(){if(navigator.mediaDevices?.getUserMedia){navigator.mediaDevices.getUserMedia({video:{facingMode:'environment'}}).then(stream=>{stream.getTracks().forEach(t=>t.stop());say('La cámara está disponible. Para usar la cámara completa, abre la aplicación Cámara de tu teléfono.');}).catch(()=>say('Android no concedió permiso para la cámara. Puedes abrirla desde las aplicaciones del teléfono.'));}else say('Abre la aplicación Cámara desde tu teléfono.')}
+const SpeechRecognition=window.SpeechRecognition||window.webkitSpeechRecognition;
+$('mic').addEventListener('click',()=>{if(!SpeechRecognition){say('El reconocimiento de voz no está disponible en este navegador. Abre este proyecto desde Chrome actualizado y una dirección HTTPS.');return}
+const r=new SpeechRecognition();r.lang='es-MX';r.interimResults=false;r.maxAlternatives=1;$('mic').classList.add('listening');$('state').textContent='ESCUCHANDO...';r.onresult=e=>runCommand(e.results[0][0].transcript);r.onerror=()=>say('No pude reconocer la voz. Revisa el permiso del micrófono.');r.onend=()=>{$('mic').classList.remove('listening');$('state').textContent='SISTEMA LISTO · ESPERANDO'};r.start();});
+$('send').onclick=()=>{const v=$('typed').value;if(v.trim())runCommand(v)};
+$('typed').addEventListener('keydown',e=>{if(e.key==='Enter')$('send').click()});
+document.querySelectorAll('[data-open]').forEach(b=>b.onclick=()=>location.href=b.dataset.open);
+$('camera').onclick=openCamera;$('testvoice').onclick=()=>say('Hola. Soy J.A.R.V.I.S. Tu asistente personal está listo.');
+function tick(){$('clock').textContent=new Date().toLocaleTimeString('es-MX',{hour:'2-digit',minute:'2-digit'});}tick();setInterval(tick,1000);
+if(navigator.getBattery){navigator.getBattery().then(b=>{const upd=()=>$('battery').textContent='Batería: '+Math.round(b.level*100)+'%';upd();b.addEventListener('levelchange',upd)}).catch(()=>{});}
+if('serviceWorker'in navigator && location.protocol.startsWith('http'))navigator.serviceWorker.register('./sw.js').catch(()=>{});
+</script>
+</body></html>
